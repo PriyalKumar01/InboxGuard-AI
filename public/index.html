@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InboxGuard AI – Intelligent Email Assistant</title>
+  <meta name="description" content="InboxGuard AI – AI-powered email assistant with Gmail integration, priority detection, summaries, and smart replies." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     AUTH SCREEN
+══════════════════════════════════════════ -->
+<div id="auth-screen" class="auth-screen hidden">
+  <div class="auth-bg">
+    <div class="auth-blob auth-blob-1"></div>
+    <div class="auth-blob auth-blob-2"></div>
+    <div class="auth-blob auth-blob-3"></div>
+  </div>
+  <div class="auth-card">
+    <div class="auth-logo">
+      <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="logoGrad" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#2563EB"/>
+            <stop offset="100%" stop-color="#4F46E5"/>
+          </linearGradient>
+        </defs>
+        <path d="M26 4L8 11v14c0 11 8 20.7 18 23 10-2.3 18-12 18-23V11L26 4z" fill="url(#logoGrad)"/>
+        <path d="M14 18l12 9 12-9" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <rect x="14" y="18" width="24" height="16" rx="2" stroke="white" stroke-width="2.2" fill="none"/>
+      </svg>
+    </div>
+    <h1 class="auth-title">InboxGuard AI</h1>
+    <p class="auth-subtitle">Your intelligent AI email assistant powered by Gmail</p>
+
+    <div class="auth-features">
+      <div class="auth-feature">
+        <span class="af-icon">🧠</span>
+        <span>AI summaries &amp; priority detection</span>
+      </div>
+      <div class="auth-feature">
+        <span class="af-icon">⚡</span>
+        <span>Smart replies &amp; actual send</span>
+      </div>
+      <div class="auth-feature">
+        <span class="af-icon">🛡</span>
+        <span>Delete protection for important emails</span>
+      </div>
+      <div class="auth-feature">
+        <span class="af-icon">✍️</span>
+        <span>AI writes email body for you</span>
+      </div>
+    </div>
+
+    <a href="/auth/google" class="auth-google-btn" id="google-signin-btn">
+      <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <path d="M19.6 10.227c0-.709-.064-1.39-.182-2.045H10v3.868h5.382a4.6 4.6 0 01-1.996 3.018v2.51h3.232c1.891-1.742 2.982-4.305 2.982-7.35z" fill="#4285F4"/>
+        <path d="M10 20c2.7 0 4.964-.895 6.618-2.423l-3.232-2.509c-.895.6-2.04.955-3.386.955-2.605 0-4.81-1.76-5.595-4.123H1.064v2.59A9.996 9.996 0 0010 20z" fill="#34A853"/>
+        <path d="M4.405 11.9A6.01 6.01 0 014.09 10c0-.663.114-1.305.314-1.9V5.51H1.064A9.996 9.996 0 000 10c0 1.614.386 3.14 1.064 4.49l3.34-2.59z" fill="#FBBC05"/>
+        <path d="M10 3.977c1.468 0 2.786.505 3.823 1.496l2.868-2.868C14.959.99 12.695 0 10 0 6.09 0 2.71 2.24 1.064 5.51l3.34 2.59C5.192 5.736 7.396 3.977 10 3.977z" fill="#EA4335"/>
+      </svg>
+      Sign in with Google
+    </a>
+
+    <p class="auth-note">We request read &amp; send access to your Gmail. Your data is never stored on our servers beyond your session.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MAIN APP
+══════════════════════════════════════════ -->
+<div id="app-screen" class="app-screen hidden">
+
+  <!-- Top Navigation Bar -->
+  <header class="topnav">
+    <div class="topnav-left" id="topnav-left">
+      <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" title="Toggle sidebar" aria-label="Toggle sidebar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topnav-logo">
+        <svg width="28" height="28" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="navLogoGrad" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#2563EB"/>
+              <stop offset="100%" stop-color="#4F46E5"/>
+            </linearGradient>
+          </defs>
+          <path d="M26 4L8 11v14c0 11 8 20.7 18 23 10-2.3 18-12 18-23V11L26 4z" fill="url(#navLogoGrad)"/>
+          <path d="M14 18l12 9 12-9" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <rect x="14" y="18" width="24" height="16" rx="2" stroke="white" stroke-width="2.5" fill="none"/>
+        </svg>
+        <span class="topnav-logo-text">InboxGuard <span class="logo-ai">AI</span></span>
+      </div>
+    </div>
+
+    <div class="topnav-center">
+      <div class="global-search">
+        <svg class="gs-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="global-search-input" placeholder='Ask AI: "interview emails", "payments", "important"…' autocomplete="off" />
+        <span class="gs-tag">AI</span>
+      </div>
+    </div>
+
+    <div class="topnav-right">
+      <!-- Compose Button -->
+      <button class="compose-btn" id="compose-btn" title="Compose new email">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        <span class="compose-label">Compose</span>
+      </button>
+      <button class="nav-icon-btn" id="refresh-btn" title="Refresh inbox">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0115-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 01-15 6.7L3 16"/></svg>
+      </button>
+      <div class="user-menu" id="user-menu">
+        <img class="user-avatar" id="user-avatar" src="" alt="Profile" />
+        <div class="user-info" id="user-info">
+          <span class="user-name" id="user-name"></span>
+          <span class="user-email" id="user-email"></span>
+        </div>
+        <button class="logout-btn" id="logout-btn" title="Sign out">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Layout -->
+  <div class="app-body">
+    <!-- Mobile sidebar overlay -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Left Sidebar -->
+    <aside class="sidebar" id="sidebar">
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">MAILBOX</div>
+        <button class="nav-btn active" data-view="INBOX" id="nav-inbox" title="Inbox">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/></svg>
+          <span>Inbox</span>
+          <span class="nav-badge" id="unread-badge"></span>
+        </button>
+        <button class="nav-btn" data-view="STARRED" title="Starred">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+          <span>Starred</span>
+        </button>
+        <button class="nav-btn" data-view="SENT" title="Sent">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22,2 15,22 11,13 2,9"/></svg>
+          <span>Sent</span>
+        </button>
+        <button class="nav-btn" data-view="TRASH" title="Trash">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,6 5,6 21,6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          <span>Trash</span>
+        </button>
+
+        <div class="nav-section-label nav-section-label--priority">PRIORITY</div>
+        <button class="nav-btn" data-view="priority-high" title="High Priority">
+          <span class="pf-dot high"></span> <span>High Priority</span>
+        </button>
+        <button class="nav-btn" data-view="priority-medium" title="Medium Priority">
+          <span class="pf-dot medium"></span> <span>Medium Priority</span>
+        </button>
+        <button class="nav-btn" data-view="priority-low" title="Low Priority">
+          <span class="pf-dot low"></span> <span>Low Priority</span>
+        </button>
+      </nav>
+
+      <!-- Daily Briefing Card -->
+      <div class="briefing-card" id="briefing-card">
+        <div class="bc-header">
+          <div class="bc-header-left">
+            <span class="bc-ai-dot"></span>
+            <span class="bc-title">AI Daily Briefing</span>
+          </div>
+          <button class="bc-toggle" id="bc-toggle">▾</button>
+        </div>
+        <div class="bc-body" id="bc-body">
+          <div class="bc-greeting" id="bc-greeting">Loading…</div>
+          <div class="bc-stats" id="bc-stats">
+            <div class="bc-stat">
+              <div class="bc-stat-n" id="bc-unread">–</div>
+              <div class="bc-stat-l">Unread</div>
+            </div>
+            <div class="bc-stat bc-stat-high">
+              <div class="bc-stat-n bc-stat-n-high" id="bc-high">–</div>
+              <div class="bc-stat-l">High</div>
+            </div>
+            <div class="bc-stat bc-stat-meetings">
+              <div class="bc-stat-n bc-stat-n-meetings" id="bc-meetings">–</div>
+              <div class="bc-stat-l">Meetings</div>
+            </div>
+            <div class="bc-stat bc-stat-total">
+              <div class="bc-stat-n bc-stat-n-total" id="bc-total">–</div>
+              <div class="bc-stat-l">Total</div>
+            </div>
+          </div>
+          <div class="bc-bars">
+            <div class="bc-bar-row">
+              <span class="bc-bar-label">High</span>
+              <div class="bc-bar-track"><div class="bc-bar-fill bc-bar-high" id="bc-bar-high"></div></div>
+            </div>
+            <div class="bc-bar-row">
+              <span class="bc-bar-label">Med</span>
+              <div class="bc-bar-track"><div class="bc-bar-fill bc-bar-med" id="bc-bar-med"></div></div>
+            </div>
+            <div class="bc-bar-row">
+              <span class="bc-bar-label">Low</span>
+              <div class="bc-bar-track"><div class="bc-bar-fill bc-bar-low" id="bc-bar-low"></div></div>
+            </div>
+          </div>
+          <div class="bc-highlights" id="bc-highlights"></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Email List Panel -->
+    <section class="email-list-panel">
+      <div class="elp-header">
+        <div class="elp-header-top">
+          <h2 class="elp-title" id="elp-title">Inbox</h2>
+          <span class="elp-count" id="elp-count"></span>
+        </div>
+        <!-- Gmail-style Category Tabs -->
+        <div class="cat-tabs" id="cat-tabs">
+          <button class="cat-tab active" data-cat="all" id="cat-tab-all">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
+            <span>All</span>
+          </button>
+          <button class="cat-tab" data-cat="primary" id="cat-tab-primary">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 01-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 011-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 011.52 0C14.51 3.81 17 5 19 5a1 1 0 011 1z"/></svg>
+            <span>Primary</span>
+            <span class="cat-badge" id="cat-badge-primary" style="display:none"></span>
+          </button>
+          <button class="cat-tab" data-cat="promotions" id="cat-tab-promotions">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            <span>Promo</span>
+            <span class="cat-badge" id="cat-badge-promotions" style="display:none"></span>
+          </button>
+          <button class="cat-tab" data-cat="social" id="cat-tab-social">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            <span>Social</span>
+            <span class="cat-badge" id="cat-badge-social" style="display:none"></span>
+          </button>
+          <button class="cat-tab" data-cat="updates" id="cat-tab-updates">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+            <span>Updates</span>
+            <span class="cat-badge" id="cat-badge-updates" style="display:none"></span>
+          </button>
+        </div>
+        <!-- Priority Filter Pills -->
+      <div class="elp-filters" id="elp-filters">
+        <button class="elf active" data-pf="all">All</button>
+        <button class="elf" data-pf="high">🔴 High</button>
+        <button class="elf" data-pf="medium">🟡 Med</button>
+        <button class="elf" data-pf="low">🟢 Low</button>
+      </div>
+    </div>
+    
+    <!-- Multi-select Auto Toolbar -->
+    <div id="multi-select-toolbar" class="multi-select-toolbar hidden">
+      <div class="mst-left">
+        <input type="checkbox" id="ms-select-all" title="Select All" />
+        <span id="sel-count-label">0 selected</span>
+      </div>
+      <div class="mst-right">
+        <button id="ms-clear-btn" class="mst-btn-secondary">Clear</button>
+        <button id="ms-delete-btn" class="mst-btn-danger">🗑 Delete</button>
+      </div>
+    </div>
+    
+    <div class="email-list" id="email-list"></div>
+      <div class="load-more-row" id="load-more-row" style="display:none">
+        <button class="load-more-btn" id="load-more-btn">Load More Emails</button>
+      </div>
+    </section>
+
+    <!-- Email Detail Panel -->
+    <section class="email-detail-panel" id="email-detail-panel">
+      <div class="detail-placeholder" id="detail-placeholder">
+        <div class="dp-illustration">
+          <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="72" height="72" rx="18" fill="#EFF6FF"/>
+            <path d="M20 28l16 12 16-12" stroke="#BFDBFE" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="20" y="28" width="32" height="22" rx="3" stroke="#93C5FD" stroke-width="2.5" fill="none"/>
+          </svg>
+        </div>
+        <h3>Select an email to read</h3>
+        <p>InboxGuard AI will analyze it instantly</p>
+      </div>
+      <div class="detail-content hidden" id="detail-content"></div>
+    </section>
+
+  </div><!-- /.app-body -->
+</div><!-- /#app-screen -->
+
+<!-- Loading overlay -->
+<div id="loading-overlay" class="loading-overlay hidden">
+  <div class="loading-box">
+    <div class="loading-spinner"></div>
+    <div class="loading-text" id="loading-text">Loading your inbox…</div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="modal-bg" class="modal-bg hidden">
+  <div class="modal-card">
+    <div class="modal-icon-wrap" id="modal-icon-wrap">⚠️</div>
+    <h3 class="modal-title" id="modal-title">Delete Email?</h3>
+    <p class="modal-msg" id="modal-msg">Are you sure?</p>
+    <div class="modal-actions">
+      <button class="modal-btn modal-btn-cancel" id="modal-cancel">Keep Email</button>
+      <button class="modal-btn modal-btn-delete" id="modal-confirm">Delete Anyway</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reply Composer Modal -->
+<div id="reply-modal" class="composer-modal hidden">
+  <div class="composer-card">
+    <div class="composer-header">
+      <div class="composer-title">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>
+        Reply
+      </div>
+      <button class="composer-close" id="reply-close" title="Close">✕</button>
+    </div>
+    <div class="composer-fields">
+      <div class="composer-field-row">
+        <label class="composer-label">To</label>
+        <input type="email" id="reply-to" class="composer-input" placeholder="recipient@email.com" />
+      </div>
+      <div class="composer-field-row">
+        <label class="composer-label">Subject</label>
+        <input type="text" id="reply-subject" class="composer-input" placeholder="Re: …" />
+      </div>
+    </div>
+    <textarea id="reply-body" class="composer-body" placeholder="Write your reply…"></textarea>
+    <div class="composer-footer">
+      <button id="reply-send-btn" class="composer-send-btn">✉️ Send Reply</button>
+      <button class="composer-cancel-btn" id="reply-cancel" onclick="document.getElementById('reply-modal').classList.add('hidden')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Compose New Email Modal -->
+<div id="compose-modal" class="composer-modal hidden">
+  <div class="composer-card">
+    <div class="composer-header">
+      <div class="composer-title">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        New Email
+        <span class="ai-compose-hint">🤖 AI writes body from subject</span>
+      </div>
+      <button class="composer-close" id="compose-close" title="Close">✕</button>
+    </div>
+    <div class="composer-fields">
+      <div class="composer-field-row">
+        <label class="composer-label">To</label>
+        <input type="email" id="compose-to" class="composer-input" placeholder="recipient@email.com" />
+      </div>
+      <div class="composer-field-row">
+        <label class="composer-label">Subject</label>
+        <input type="text" id="compose-subject" class="composer-input" placeholder="Type subject – AI will write the body!" />
+      </div>
+    </div>
+    <div class="composer-ai-bar" id="compose-ai-bar">
+      <div class="cai-left">
+        <span class="cai-dot"></span>
+        <span>AI is ready to draft your email – type a subject above</span>
+      </div>
+      <div class="cai-actions">
+        <button id="compose-gen-btn" class="cai-btn" title="Re-generate draft based on subject">✨ Generate</button>
+        <button id="compose-rewrite-btn" class="cai-btn" title="Cycle through different tone/styles">🔄 Rewrite</button>
+      </div>
+    </div>
+    <textarea id="compose-body" class="composer-body" placeholder="AI will generate the body – or write it yourself…"></textarea>
+    <div class="composer-footer">
+      <button id="compose-send-btn" class="composer-send-btn">✉️ Send Email</button>
+      <button class="composer-cancel-btn" id="compose-cancel" onclick="document.getElementById('compose-modal').classList.add('hidden')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Support Widget -->
+<div id="support-widget" class="support-widget">
+  <div class="support-panel" id="support-panel">
+    <h4>Need Help?</h4>
+    <p>Contact our support team directly.</p>
+    <button id="support-wa-btn" class="sw-btn wa">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      WhatsApp Support
+    </button>
+    <button id="support-email-btn" class="sw-btn em">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Email Support
+    </button>
+  </div>
+  <button class="support-toggle" id="support-toggle" title="Help & Support">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+  </button>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast hidden"></div>
+
+<!-- Scripts -->
+<script src="agents.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "inboxguard-ai",
+  "version": "2.0.0",
+  "description": "InboxGuard AI - Intelligent Email Assistant",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "express": "^4.22.1",
+    "express-session": "^1.19.0",
+    "googleapis": "^140.0.1"
+  }
+}

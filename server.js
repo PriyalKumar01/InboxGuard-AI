@@ -13,10 +13,11 @@ const app  = express();
 const PORT = process.env.PORT || 3000;
 
 // ── OAuth2 Client ────────────────────────────────────────────
+const baseUrl = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
 const oauth2Client = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
-  `http://localhost:${PORT}/auth/google/callback`
+  `${baseUrl}/auth/google/callback`
 );
 
 const SCOPES = [
